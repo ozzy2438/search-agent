@@ -33,10 +33,19 @@ pip install -r requirements.txt
 ```
 
 3. Set up environment variables:
-Create a `.env` file in the root directory with:
-```
-TAVILY_API_KEY=your_api_key_here
-```
+   - Copy `.env.example` to create your own `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+   - Edit `.env` and replace the placeholder values with your actual API keys:
+   ```
+   TAVILY_API_KEY=your_actual_tavily_api_key_here
+   ```
+   
+   ⚠️ **Security Note**: 
+   - Never commit your `.env` file to version control
+   - Keep your API keys private and secure
+   - The `.env` file is already in `.gitignore` to prevent accidental commits
 
 4. Run the application:
 ```bash
@@ -53,6 +62,21 @@ The application will be available at `http://localhost:5002`
 4. Click "Add Task" to queue your research request
 5. Use "Process Tasks" to start processing the queue
 6. View results in real-time with detailed analysis
+
+## Security Best Practices
+
+1. API Key Protection:
+   - Store API keys in `.env` file
+   - Never commit `.env` file to version control
+   - Use environment variables in production
+   
+2. Rate Limiting:
+   - Configure rate limits in `.env`
+   - Monitor API usage
+   
+3. Error Handling:
+   - Sensitive error details are logged but not exposed to users
+   - All API responses are sanitized
 
 ## License
 
