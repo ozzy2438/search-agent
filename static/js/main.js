@@ -146,31 +146,115 @@ function displayResults(results) {
         return;
     }
 
-    resultsContainer.innerHTML = results.map(result => `
-        <div class="result-card ${result.result.status}">
-            <div class="result-header">
-                <h3>Query: ${escapeHtml(result.query)}</h3>
-                <span class="status-badge ${result.result.status}">
-                    ${formatStatus(result.result.status)}
-                </span>
+    resultsContainer.innerHTML = results.map(result => {
+        const query = result.query;
+        const highlightedQuery = highlightKeywords(query);
+        
+        return `
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="query-section">
+                        <div class="query-text">${highlightedQuery}</div>
+                        <div class="category-badge">${escapeHtml(result.category)}</div>
+                    </div>
+                    <div class="status-badge ${result.result.status}">
+                        ${formatStatus(result.result.status)}
+                    </div>
+                </div>
+                
+                ${result.result.error ? 
+                    `<div class="error-message">${escapeHtml(result.result.error)}</div>` :
+                    `<div class="result-content">
+                        <div class="research-results">
+                            <h4>Research Results:</h4>
+                            <p>${formatContent(result.result.research_results.answer || 'No answer available')}</p>
+                        </div>
+                        
+                        <div class="reasoning-analysis">
+                            <h4>AI Analysis:</h4>
+                            <p>${formatContent(result.result.reasoning_analysis || 'No analysis available')}</p>
+                        </div>
+                        
+                        ${result.result.research_results.sources ? `
+                            <div class="sources-section">
+                                <h4>Sources:</h4>
+                                <div class="source-list">
+                                    ${result.result.research_results.sources.map(source => `
+                                        <a href="${escapeHtml(source.url)}" class="source-item" target="_blank">
+                                            ${escapeHtml(source.title || source.url)}
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="follow-up-section">
+                            <h4>Suggested Follow-up Questions:</h4>
+                            <div class="follow-up-questions">
+                                ${generateFollowUpQuestions(query).map(q => `
+                                    <button class="follow-up-question" onclick="addFollowUpQuery('${escapeHtml(q)}')">${escapeHtml(q)}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>`
+                }
             </div>
-            <p><strong>Category:</strong> ${escapeHtml(result.category)}</p>
-            
-            ${result.result.error ? 
-                `<div class="error-message">${escapeHtml(result.result.error)}</div>` :
-                `<div class="result-content">
-                    <div class="research-results">
-                        <h4>Research Results:</h4>
-                        <p>${escapeHtml(result.result.research_results.answer || 'No answer available')}</p>
-                    </div>
-                    <div class="reasoning-analysis">
-                        <h4>AI Analysis:</h4>
-                        <p>${escapeHtml(result.result.reasoning_analysis || 'No analysis available')}</p>
-                    </div>
-                </div>`
-            }
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+// Helper function to highlight keywords
+function highlightKeywords(text) {
+    const keywords = [
+        'how', 'what', 'why', 'when', 'where', 'which', 'who',
+        'influence', 'affect', 'impact', 'cause', 'effect', 'relationship',
+        'function', 'process', 'system', 'mechanism', 'role'
+    ];
+    
+    return text.split(' ').map(word => {
+        const lowerWord = word.toLowerCase();
+        if (keywords.includes(lowerWord)) {
+            return `<span class="highlight">${word}</span>`;
+        }
+        return word;
+    }).join(' ');
+}
+
+// Helper function to format content with highlights
+function formatContent(text) {
+    const keywords = [
+        'influence', 'affect', 'impact', 'cause', 'effect', 'relationship',
+        'function', 'process', 'system', 'mechanism', 'role', 'significant',
+        'important', 'crucial', 'essential', 'key', 'main', 'primary'
+    ];
+    
+    return text.split(' ').map(word => {
+        const lowerWord = word.toLowerCase();
+        if (keywords.includes(lowerWord)) {
+            return `<span class="highlight-word">${word}</span>`;
+        }
+        return word;
+    }).join(' ');
+}
+
+// Generate follow-up questions based on the original query
+function generateFollowUpQuestions(query) {
+    const baseQuestions = [
+        'What are the latest developments in this field?',
+        'How does this relate to overall health?',
+        'What are the practical applications?',
+        'What are the main challenges?',
+        'How can this knowledge be applied in daily life?'
+    ];
+    
+    return baseQuestions;
+}
+
+// Add follow-up query to the input
+function addFollowUpQuery(question) {
+    const queryInput = document.getElementById('query');
+    queryInput.value = question;
+    queryInput.focus();
 }
 
 // Update queue status
