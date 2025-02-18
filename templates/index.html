@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workflow Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Workflow Agent</h1>
+            <div class="theme-toggle">
+                <button id="theme-toggle-btn">🌙</button>
+            </div>
+        </header>
+
+        <main class="workflow-container">
+            <section class="task-creation-panel">
+                <h2>Create New Task</h2>
+                <form id="task-form">
+                    <div class="input-group">
+                        <label for="query">Query:</label>
+                        <textarea id="query" name="query" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" required>
+                            <option value="general">General</option>
+                            <option value="science">Science</option>
+                            <option value="technology">Technology</option>
+                            <option value="business">Business</option>
+                            <option value="health">Health</option>
+                        </select>
+                    </div>
+                    <div class="input-group importance-slider">
+                        <label for="importance">Importance:</label>
+                        <div class="slider-container">
+                            <input type="range" id="importance" name="importance" min="1" max="5" value="1">
+                            <div class="slider-value">1</div>
+                        </div>
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary">Add Task</button>
+                </form>
+            </section>
+
+            <aside class="workflow-panel">
+                <section class="queue-panel">
+                    <h2>Task Queue</h2>
+                    <div id="queue-list" class="queue-list"></div>
+                    <button id="process-tasks-btn" class="btn primary" disabled>Process Tasks</button>
+                </section>
+
+                <section class="results-panel">
+                    <h2>Results</h2>
+                    <div id="results-container" class="results-container"></div>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loader"></div>
+        <p>Processing tasks...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
